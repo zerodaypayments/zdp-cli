@@ -1,41 +1,61 @@
+/**
+ * 	zdp wallet create <wallet-file> <private-key>
+ *
+ * 	zdp wallet balance <walletfile> <password>
+ * 	zdp wallet dumpprivkeys <walletfile> <password> <filename>
+ * 	zdp wallet encrypt <walletfile> <oldpassword> <newpassword>
+ *
+ * 	zdp wallet address add-existing <seed> <walletfile> <password>
+ * 	zdp wallet address add-new <walletfile> <password>
+ * 	zdp wallet address delete <address> <walletfile> <password>
+ * 	zdp wallet address list <address> <walletfile> <password>
+ *
+ * 	zdp address get-new
+ * 	zdp address get-existing <seed>
+ * 	zdp address balance <address> <
+ *
+ * 	zdp tx <uuid>
+ * 	gettransaction <txid>							Produces a human-readable JSON object for a transaction.
+ *	dumpprivkey <address>							Reveals the private key corresponding to <address>
+ * 	dumpwallet <filename>							Exports all wallet private keys to file
+ *	encryptwallet <oldpassphrase> <newpassphrase> 	Encrypts the wallet with <passphrase>.
+ *	getaddress	<address>							Returns the address details.
+ *  getnewaddress									Creates a new address
+ *	getbalance  <address>							Returns address balanc
+ *
+ *	Common flags:
+ *		-v, --verbose
+ *		-ver, --version
+ *
+ */
+
 #include <iostream>
+#include <string>
+#include <vector>
 
-#include "cxxopts.hpp"
+const auto app_version = 1.023;
 
-int main(int argc, char* argv[]) {
+void help() {
 
-	try {
+}
 
-		cxxopts::Options options(argv[0], "ZDP command line options");
+int main(int argc, char** argv) {
 
-		//options.positional_help("[optional args]").show_positional_help();
+	std::vector<std::string> args;
 
-		options.add_options()
-			("c, command", "ZDP command to execute", cxxopts::value<std::vector<std::string>>())
-			("f, file", "Path to wallet file", cxxopts::value<std::vector<std::string>>(), "file")
-			("h, 	help", "Print help");
-
-		//options.parse_positional( { "input", "output", "positional" });
-
-		auto result = options.parse(argc, argv);
-
-		if (result.count("help")) {
-			std::cout << options.help( { "", "Group" }) << std::endl;
-			exit(0);
-		}
-
-		if (result.count("f")) {
-			auto& ff = result["f"].as<std::vector<std::string>>();
-			std::cout << "Files" << std::endl;
-			for (const auto& f : ff) {
-				std::cout << f << std::endl;
-			}
-		}
-
-	} catch (const cxxopts::OptionException& e) {
-		std::cerr << "error parsing options: " << e.what() << std::endl;
-		exit(1);
+	for (int i = 0; i < argc; ++i) {
+		args.push_back(std::string { argv[i] });
 	}
 
-	return 0;
+	if (args.size() == 1) {
+		help();
+		return EXIT_SUCCESS;
+	}
+
+	if (args[1] == "wallet") {
+		std::cout << "wallet\n";
+	}
+
+	return EXIT_SUCCESS;
+
 }

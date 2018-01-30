@@ -20,6 +20,7 @@ namespace zdp {
 			std::string name;
 			int version = 0;
 			std::string file;
+			int sequence = 0;
 
 		public:
 
