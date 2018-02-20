@@ -6,6 +6,13 @@
  *	zdp balance <seed> - returns <seed> balance
  *	zdp address <seed> - returns unique address for the transfer
  *	zdp tx <uuid> - returns tx information
+ *	TODO zdp restore <comma-separated-list-of-words> - returns seed
+ *	TODO zdp transfer <from> <to> <amount> <memo> - return TX UUID or error
+ *	TODO zdp txfrom <address>
+ *	TODO zdp txto <address>
+ *	TODO zdp txfrommemo <from> <memo>
+ *	TODO zdp txtomemo <to> <memo>
+ *	TODO zdp txlist <seed> [number-of-transactions] - returns last of max of 100 latest tx
  */
 
 #include <cstdlib>
@@ -34,7 +41,8 @@ int main(int argc, char** argv) {
 		return EXIT_SUCCESS;
 	}
 
-	std::string host = "http://localhost";
+//	std::string host = "http://localhost";
+	std::string host = "http://api.zdp.io";
 
 	const auto arg_1 = args[1];
 
@@ -61,12 +69,13 @@ int main(int argc, char** argv) {
 
 	} else if (arg_1 == "keys") {
 
-		const auto arg_2 = args[2];
-
 		if (args.size() < 3) {
-			std::cerr << "Please, specify the <seed> value";
+			std::cerr << "Please, specify the <seed> value\n";
 			return EXIT_FAILURE;
 		}
+
+
+		const auto arg_2 = args[2];
 
 		auto resp = http_client.get(host + "/api/v1/account/keys/" + arg_2, timeout, user_agent);
 		auto json = json::parse(resp.data);
@@ -74,12 +83,12 @@ int main(int argc, char** argv) {
 
 	} else if (arg_1 == "balance") {
 
-		const auto arg_2 = args[2];
-
 		if (args.size() < 3) {
-			std::cerr << "Please, specify the <seed> value";
+			std::cerr << "Please, specify the <seed> value\n";
 			return EXIT_FAILURE;
 		}
+
+		const auto arg_2 = args[2];
 
 		auto resp = http_client.get(host + "/api/v1/seed/balance/" + arg_2, timeout, user_agent);
 		auto json = json::parse(resp.data);
@@ -90,7 +99,7 @@ int main(int argc, char** argv) {
 		const auto arg_2 = args[2];
 
 		if (args.size() < 3) {
-			std::cerr << "Please, specify the <seed> value";
+			std::cerr << "Please, specify the <seed> value\n";
 			return EXIT_FAILURE;
 		}
 
@@ -100,12 +109,12 @@ int main(int argc, char** argv) {
 
 	} else if (arg_1 == "tx") {
 
-		const auto arg_2 = args[2];
-
 		if (args.size() < 3) {
-			std::cerr << "Please, specify the <transaction UUID>";
+			std::cerr << "Please, specify the <transaction UUID>\n";
 			return EXIT_FAILURE;
 		}
+
+		const auto arg_2 = args[2];
 
 		auto resp = http_client.get(host + "/api/v1/tx/" + arg_2, timeout, user_agent);
 		auto json = json::parse(resp.data);
@@ -116,3 +125,5 @@ int main(int argc, char** argv) {
 	return EXIT_SUCCESS;
 
 }
+
+

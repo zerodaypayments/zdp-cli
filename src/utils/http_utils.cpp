@@ -9,8 +9,8 @@
 
 #include <iostream>
 #include <string>
-
-#include "../jsoncpp/json/json.h"
+#include <ostream>
+#include <sstream>
 
 #include "http_utils.h"
 
@@ -53,13 +53,15 @@ namespace zdp {
 			curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 			curl_easy_setopt(curl, CURLOPT_USERAGENT, agent.c_str());
 
-			CURLcode res = curl_easy_perform(curl);
-
 			httpresponse response;
 
+			CURLcode res = curl_easy_perform(curl);
+
 			if (res != CURLE_OK) {
-				std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
+
+				std::cerr << "Cannot connect to the network" << std::endl;
 				response.error = true;
+
 			} else {
 
 				if (CURLE_OK == res) {
