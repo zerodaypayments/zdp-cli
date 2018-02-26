@@ -41,8 +41,8 @@ int main(int argc, char** argv) {
 		return EXIT_SUCCESS;
 	}
 
-//	std::string host = "http://localhost";
-	std::string host = "http://api.zdp.io";
+	std::string host = "http://localhost";
+//	std::string host = "http://api.zdp.io";
 
 	const auto arg_1 = args[1];
 
@@ -54,18 +54,26 @@ int main(int argc, char** argv) {
 	if (arg_1 == "ping") {
 
 		auto resp = http_client.get(host + "/ping", timeout, user_agent);
-		std::cout << resp.data << std::endl;
+		if (!resp.error) {
+			auto json = json::parse(resp.data);
+			std::cout << json.dump(4) << std::endl;
+		}
 
 	} else if (arg_1 == "fee") {
 
 		auto resp = http_client.get(host + "/api/v1/fee", timeout, user_agent);
-		std::cout << resp.data << std::endl;
+		if (!resp.error) {
+			auto json = json::parse(resp.data);
+			std::cout << json.dump(4) << std::endl;
+		}
 
 	} else if (arg_1 == "newaccount") {
 
 		auto resp = http_client.get(host + "/api/v1/account/seed", timeout, user_agent);
-		auto json = json::parse(resp.data);
-		std::cout << json.dump(4) << std::endl;
+		if (!resp.error) {
+			auto json = json::parse(resp.data);
+			std::cout << json.dump(4) << std::endl;
+		}
 
 	} else if (arg_1 == "keys") {
 
@@ -74,12 +82,13 @@ int main(int argc, char** argv) {
 			return EXIT_FAILURE;
 		}
 
-
 		const auto arg_2 = args[2];
 
 		auto resp = http_client.get(host + "/api/v1/account/keys/" + arg_2, timeout, user_agent);
-		auto json = json::parse(resp.data);
-		std::cout << json.dump(4) << std::endl;
+		if (!resp.error) {
+			auto json = json::parse(resp.data);
+			std::cout << json.dump(4) << std::endl;
+		}
 
 	} else if (arg_1 == "balance") {
 
@@ -91,8 +100,10 @@ int main(int argc, char** argv) {
 		const auto arg_2 = args[2];
 
 		auto resp = http_client.get(host + "/api/v1/seed/balance/" + arg_2, timeout, user_agent);
-		auto json = json::parse(resp.data);
-		std::cout << json.dump(4) << std::endl;
+		if (!resp.error) {
+			auto json = json::parse(resp.data);
+			std::cout << json.dump(4) << std::endl;
+		}
 
 	} else if (arg_1 == "address") {
 
@@ -104,8 +115,10 @@ int main(int argc, char** argv) {
 		}
 
 		auto resp = http_client.get(host + "/api/v1/seed/address/" + arg_2, timeout, user_agent);
-		auto json = json::parse(resp.data);
-		std::cout << json.dump(4) << std::endl;
+		if (!resp.error) {
+			auto json = json::parse(resp.data);
+			std::cout << json.dump(4) << std::endl;
+		}
 
 	} else if (arg_1 == "tx") {
 
@@ -117,13 +130,16 @@ int main(int argc, char** argv) {
 		const auto arg_2 = args[2];
 
 		auto resp = http_client.get(host + "/api/v1/tx/" + arg_2, timeout, user_agent);
-		auto json = json::parse(resp.data);
-		std::cout << json.dump(4) << std::endl;
+
+		if (!resp.error) {
+
+			auto json = json::parse(resp.data);
+			std::cout << json.dump(4) << std::endl;
+		}
 
 	};
 
 	return EXIT_SUCCESS;
 
 }
-
 
