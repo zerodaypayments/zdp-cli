@@ -45,6 +45,8 @@ namespace zdp {
 
 			std::ostringstream stream;
 
+//			curl_easy_setopt(curl, CURLOPT_PROXY, "http://eisproxyau:8080");
+
 			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &data_write);
 			curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
 			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);

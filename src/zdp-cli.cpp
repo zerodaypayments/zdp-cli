@@ -1,13 +1,13 @@
 /**
  * 	zdp fee - returns <fee>
- *	zdp newaccount - returns <seed>
+ *	zdp newaccount - returns <secretkey>
  *	zdp ping - returns <current time>
- *	zdp keys <seed> - return key pair for the seed
- *	zdp balance <seed> - returns <seed> balance
- *	zdp address <seed> - returns unique address for the transfer
+ *	zdp keys <secretkey> - return key pair for the seed
+ *	zdp balance <secretkey> - returns <seed> balance
+ *	zdp newaddress <secretkey> - returns unique address for the transfer
  *	zdp tx <uuid> - returns tx information
  *	TODO zdp restore <comma-separated-list-of-words> - returns seed
- *	TODO zdp transfer <from> <to> <amount> <memo> - return TX UUID or error
+ *	TODO zdp transfer <from> <to> <amount> <memo> <secretkey> - return TX UUID or error
  *	TODO zdp txfrom <address>
  *	TODO zdp txto <address>
  *	TODO zdp txfrommemo <from> <memo>
@@ -70,6 +70,7 @@ int main(int argc, char** argv) {
 	} else if (arg_1 == "newaccount") {
 
 		auto resp = http_client.get(host + "/api/v1/account/seed", timeout, user_agent);
+
 		if (!resp.error) {
 			auto json = json::parse(resp.data);
 			std::cout << json.dump(4) << std::endl;
@@ -105,7 +106,7 @@ int main(int argc, char** argv) {
 			std::cout << json.dump(4) << std::endl;
 		}
 
-	} else if (arg_1 == "address") {
+	} else if (arg_1 == "newaddress") {
 
 		const auto arg_2 = args[2];
 
