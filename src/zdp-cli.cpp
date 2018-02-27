@@ -123,7 +123,7 @@ int main(int argc, const char **argv) {
 
 		zdp::utils::httpclient http_client;
 
-		auto resp = http_client.get(host + "/api/v1/seed/address/" + key, timeout, user_agent);
+		auto resp = http_client.get(host + "/api/v1/address/" + key, timeout, user_agent);
 		if (!resp.error) {
 			auto json = json::parse(resp.data);
 			std::cout << json.dump(4) << std::endl;
