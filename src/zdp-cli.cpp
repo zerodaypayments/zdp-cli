@@ -1,7 +1,14 @@
 #include <iostream>
 #include "args.hpp"
 #include "utils/http_utils.h"
+#include "utils/crypto_utils.h"
 #include "json.hpp"
+#include <openssl/rand.h>
+#include <openssl/err.h>
+#include <openssl/sha.h>
+#include <openssl/evp.h>
+#include <openssl/bn.h>
+#include <openssl/ec.h>
 
 args::Group arguments("arguments");
 args::HelpFlag h(arguments, "help", "help", { 'h', "help" });
@@ -14,8 +21,30 @@ std::string host = "http://localhost";
 const auto timeout = 10;
 const auto user_agent = "zdp-cli";
 
+
+
 int main(int argc, const char **argv) {
 
+	uint8_t buffer[32];
+
+	int rc = RAND_bytes(buffer, sizeof(buffer));
+	unsigned long err = ERR_get_error();
+
+	if(rc != 1) {
+		std::cerr << "Can't generate random number\n";
+	} else {
+		std::cout << "Generated random number\n";
+	}
+
+	auto key = zdp::crypto::bbp_ec_new_keypair(buffer);
+
+	const BIGNUM *priv_bn = EC_KEY_get0_private_key(key);
+
+	auto str  = BN_bn2hex(priv_bn);
+
+	std::cout << std::string(str) << std::endl;
+
+/*
 	args::ArgumentParser p("ZDP command line interface");
 	args::Group commands(p, "commands");
 
@@ -162,5 +191,7 @@ int main(int argc, const char **argv) {
 		std::cerr << e.what() << std::endl << p;
 		return EXIT_FAILURE;
 	}
+
+	*/
 	return EXIT_SUCCESS;
 }
