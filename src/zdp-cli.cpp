@@ -21,8 +21,6 @@ std::string host = "http://localhost";
 const auto timeout = 10;
 const auto user_agent = "zdp-cli";
 
-
-
 int main(int argc, const char **argv) {
 
 	uint8_t buffer[32];
@@ -38,11 +36,17 @@ int main(int argc, const char **argv) {
 
 	auto key = zdp::crypto::bbp_ec_new_keypair(buffer);
 
-	const BIGNUM *priv_bn = EC_KEY_get0_private_key(key);
+	{
+		auto priv_bn = EC_KEY_get0_private_key(key);
+		auto str = BN_bn2hex(priv_bn);
+		std::cout << "Private key: " << std::string(str) << std::endl;
+	}
 
-	auto str  = BN_bn2hex(priv_bn);
-
-	std::cout << std::string(str) << std::endl;
+	{
+		auto pub_bn = EC_KEY_get0_public_key(key);
+		auto str = EC_POINT_point2hex(EC_KEY_get0_group(key), EC_KEY_get0_public_key(key), point_conversion_form_t::POINT_CONVERSION_COMPRESSED, nullptr);
+		std::cout << "Public key: " << std::string(str) << std::endl;
+	}
 
 /*
 	args::ArgumentParser p("ZDP command line interface");
