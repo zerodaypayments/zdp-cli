@@ -2,13 +2,8 @@
 #include "args.hpp"
 #include "utils/http_utils.h"
 #include "utils/crypto_utils.h"
+#include "utils/key_pair.h"
 #include "json.hpp"
-#include <openssl/rand.h>
-#include <openssl/err.h>
-#include <openssl/sha.h>
-#include <openssl/evp.h>
-#include <openssl/bn.h>
-#include <openssl/ec.h>
 
 args::Group arguments("arguments");
 args::HelpFlag h(arguments, "help", "help", { 'h', "help" });
@@ -23,32 +18,7 @@ const auto user_agent = "zdp-cli";
 
 int main(int argc, const char **argv) {
 
-	uint8_t buffer[32];
 
-	int rc = RAND_bytes(buffer, sizeof(buffer));
-	unsigned long err = ERR_get_error();
-
-	if(rc != 1) {
-		std::cerr << "Can't generate random number\n";
-	} else {
-		std::cout << "Generated random number\n";
-	}
-
-	auto key = zdp::crypto::bbp_ec_new_keypair(buffer);
-
-	{
-		auto priv_bn = EC_KEY_get0_private_key(key);
-		auto str = BN_bn2hex(priv_bn);
-		std::cout << "Private key: " << std::string(str) << std::endl;
-	}
-
-	{
-		auto pub_bn = EC_KEY_get0_public_key(key);
-		auto str = EC_POINT_point2hex(EC_KEY_get0_group(key), EC_KEY_get0_public_key(key), point_conversion_form_t::POINT_CONVERSION_COMPRESSED, nullptr);
-		std::cout << "Public key: " << std::string(str) << std::endl;
-	}
-
-/*
 	args::ArgumentParser p("ZDP command line interface");
 	args::Group commands(p, "commands");
 
@@ -86,47 +56,36 @@ int main(int argc, const char **argv) {
 	args::Command newAccount(commands, "newaccount", "Create new account", [&](args::Subparser &parser)
 	{
 
-		args::ValueFlag<std::string> lang(parser, "LANGUAGE", "Mnemonics language", {"lang"});
+		parser.Parse();
+
+		/*
+		args::ValueFlag<std::string> lang(parser, "LANGUAGE", "Mnemonics language", {"lang"}, "english");
 
 		parser.Parse();
 
-		auto url = host + "/api/v1/account/seed";
-
 		auto language = args::get(lang);
+		*/
 
-		url += "?lang=" + language;
-
-		zdp::utils::httpclient http_client;
-
-		auto resp = http_client.get(url, timeout, user_agent);
-
-		if (!resp.error) {
-			auto json = json::parse(resp.data);
-			std::cout << json.dump(4) << std::endl;
-		}
+		zdp::key_pair kp;
+		std::cout << kp.to_json(zdp::language::english) << std::endl;
 
 	});
 
-	args::Command keys(commands, "keys", "Generate public and private key pair for a secret key", [&](args::Subparser &parser)
+	args::Command keys(commands, "publickey", "Generate public key", [&](args::Subparser &parser)
 	{
 
-		args::ValueFlag<std::string> keyValue(parser, "SECRETKEY", "Secret key", {"key"}, args::Options::Required);
+		args::ValueFlag<std::string> keyValue(parser, "PRIVATEKEY", "Private key", {"key"}, args::Options::Required);
 
 		parser.Parse();
 
 		auto key = args::get(keyValue);
 
-		zdp::utils::httpclient http_client;
-
-		auto resp = http_client.get(host + "/api/v1/account/keys/" + key, timeout, user_agent);
-		if (!resp.error) {
-			auto json = json::parse(resp.data);
-			std::cout << json.dump(4) << std::endl;
-		}
+		zdp::key_pair kp (key);
+		std::cout << kp.to_json(zdp::language::english) << std::endl;
 
 	});
 
-	args::Command balance(commands, "balance", "Get account's balance by a secret key", [&](args::Subparser &parser)
+	args::Command balance(commands, "balance", "Get account's balance", [&](args::Subparser &parser)
 	{
 
 		args::ValueFlag<std::string> keyValue(parser, "SECRETKEY", "Secret key", {"key"}, args::Options::Required);
@@ -196,6 +155,5 @@ int main(int argc, const char **argv) {
 		return EXIT_FAILURE;
 	}
 
-	*/
 	return EXIT_SUCCESS;
 }
