@@ -19,6 +19,10 @@ const auto user_agent = "zdp-cli";
 int main(int argc, const char **argv) {
 
 
+
+
+
+
 	args::ArgumentParser p("ZDP command line interface");
 	args::Group commands(p, "commands");
 

@@ -44,7 +44,8 @@ std::string zdp::crypto::sha256(void* data, unsigned int length)
 
 
 
-EC_KEY *zdp::crypto::bbp_ec_new_keypair(const uint8_t *priv_bytes) {
+EC_KEY *zdp::crypto::ec_new_keypair(const uint8_t *priv_bytes) {
+
 	EC_KEY *key;
 	BIGNUM *priv;
 	BN_CTX *ctx;
@@ -81,7 +82,7 @@ EC_KEY *zdp::crypto::bbp_ec_new_keypair(const uint8_t *priv_bytes) {
 	return key;
 }
 
-EC_KEY *zdp::crypto::bbp_ec_new_pubkey(const uint8_t *pub_bytes,
+EC_KEY *zdp::crypto::ec_new_pubkey(const uint8_t *pub_bytes,
 		size_t pub_len) {
 	EC_KEY *key;
 	const uint8_t *pub_bytes_copy;
