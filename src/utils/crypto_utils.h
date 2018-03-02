@@ -16,6 +16,8 @@ namespace zdp {
 		EC_KEY *ec_new_keypair(const uint8_t *priv_bytes);
 		EC_KEY *ec_new_pubkey(const uint8_t *pub_bytes, size_t pub_len);
 
+		std::string encrypt(const std::string& private_key, const std::string& text);
+
 	}
 }
 

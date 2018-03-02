@@ -5,6 +5,8 @@
 #include "utils/key_pair.h"
 #include "json.hpp"
 
+#include "utils/cryptron/ecies.h"
+
 args::Group arguments("arguments");
 args::HelpFlag h(arguments, "help", "help", { 'h', "help" });
 
@@ -18,10 +20,17 @@ const auto user_agent = "zdp-cli";
 
 int main(int argc, const char **argv) {
 
+	OpenSSL_add_all_algorithms();
+	ERR_load_BIO_strings();
+	ERR_load_crypto_strings();
 
+	std::string key = "03F15CA200C6683D0469F39A58ECD93B39ECA2E4D4204095D99C32DF292F7867B4";
+	std::string text = "hello world!";
+	ecies_group_init();
 
+	// unsigned char* t = reinterpret_cast<unsigned char *>( text.c_str()  );
 
-
+	//auto enc = ecies_encrypt(const_cast<char*> (key.c_str() ), t , text.size());
 
 	args::ArgumentParser p("ZDP command line interface");
 	args::Group commands(p, "commands");
@@ -63,12 +72,12 @@ int main(int argc, const char **argv) {
 		parser.Parse();
 
 		/*
-		args::ValueFlag<std::string> lang(parser, "LANGUAGE", "Mnemonics language", {"lang"}, "english");
+		 args::ValueFlag<std::string> lang(parser, "LANGUAGE", "Mnemonics language", {"lang"}, "english");
 
-		parser.Parse();
+		 parser.Parse();
 
-		auto language = args::get(lang);
-		*/
+		 auto language = args::get(lang);
+		 */
 
 		zdp::key_pair kp;
 		std::cout << kp.to_json(zdp::language::english) << std::endl;

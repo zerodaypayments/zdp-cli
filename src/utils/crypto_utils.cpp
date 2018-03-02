@@ -12,45 +12,39 @@
 #include <openssl/sha.h>
 #include <openssl/evp.h>
 
-std::string zdp::crypto::sha256(const std::string str)
-{
-    unsigned char hash[SHA256_DIGEST_LENGTH];
-    SHA256_CTX sha256;
-    SHA256_Init(&sha256);
-    SHA256_Update(&sha256, str.c_str(), str.size());
-    SHA256_Final(hash, &sha256);
-    std::stringstream ss;
-    for(int i = 0; i < SHA256_DIGEST_LENGTH; i++)
-    {
-        ss << std::hex << std::setw(2) << std::setfill('0') << (int)hash[i];
-    }
-    return ss.str();
+std::string zdp::crypto::sha256(const std::string str) {
+	unsigned char hash[SHA256_DIGEST_LENGTH];
+	SHA256_CTX sha256;
+	SHA256_Init(&sha256);
+	SHA256_Update(&sha256, str.c_str(), str.size());
+	SHA256_Final(hash, &sha256);
+	std::stringstream ss;
+	for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
+		ss << std::hex << std::setw(2) << std::setfill('0') << (int) hash[i];
+	}
+	return ss.str();
 }
 
-std::string zdp::crypto::sha256(void* data, unsigned int length)
-{
-    unsigned char hash[SHA256_DIGEST_LENGTH];
-    SHA256_CTX sha256;
-    SHA256_Init(&sha256);
-    SHA256_Update(&sha256, data, length);
-    SHA256_Final(hash, &sha256);
-    std::stringstream ss;
-    for(int i = 0; i < SHA256_DIGEST_LENGTH; i++)
-    {
-        ss << std::hex << std::setw(2) << std::setfill('0') << (int)hash[i];
-    }
-    return ss.str();
+std::string zdp::crypto::sha256(void* data, unsigned int length) {
+	unsigned char hash[SHA256_DIGEST_LENGTH];
+	SHA256_CTX sha256;
+	SHA256_Init(&sha256);
+	SHA256_Update(&sha256, data, length);
+	SHA256_Final(hash, &sha256);
+	std::stringstream ss;
+	for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
+		ss << std::hex << std::setw(2) << std::setfill('0') << (int) hash[i];
+	}
+	return ss.str();
 }
-
-
 
 EC_KEY *zdp::crypto::ec_new_keypair(const uint8_t *priv_bytes) {
 
-	EC_KEY *key;
-	BIGNUM *priv;
-	BN_CTX *ctx;
-	const EC_GROUP *group;
-	EC_POINT *pub;
+	EC_KEY *key = nullptr;
+	BIGNUM *priv = nullptr;
+	BN_CTX *ctx = nullptr;
+	const EC_GROUP *group = nullptr;
+	EC_POINT *pub = nullptr;
 
 	/* init empty OpenSSL EC keypair */
 
@@ -82,16 +76,20 @@ EC_KEY *zdp::crypto::ec_new_keypair(const uint8_t *priv_bytes) {
 	return key;
 }
 
-EC_KEY *zdp::crypto::ec_new_pubkey(const uint8_t *pub_bytes,
-		size_t pub_len) {
-	EC_KEY *key;
-	const uint8_t *pub_bytes_copy;
+EC_KEY *zdp::crypto::ec_new_pubkey(const uint8_t *pub_bytes, size_t pub_len) {
+
+	EC_KEY *key = nullptr;
+	const uint8_t *pub_bytes_copy = nullptr;
 
 	key = EC_KEY_new_by_curve_name(NID_secp256k1);
 	pub_bytes_copy = pub_bytes;
 	o2i_ECPublicKey(&key, &pub_bytes_copy, pub_len);
 
 	return key;
+}
+
+std::string zdp::crypto::encrypt(std::string const & public_key, std::string const & text) {
+
 }
 
 /*
