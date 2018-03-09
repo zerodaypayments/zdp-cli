@@ -1,0 +1,9 @@
+/Debug/
+.classpath
+.project
+.settings/
+/Release/
+*.wallet
+.cproject
+test/
+temp/

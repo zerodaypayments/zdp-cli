@@ -12,32 +12,6 @@
 #include <openssl/sha.h>
 #include <openssl/evp.h>
 
-std::string zdp::crypto::sha256(const std::string str) {
-	unsigned char hash[SHA256_DIGEST_LENGTH];
-	SHA256_CTX sha256;
-	SHA256_Init(&sha256);
-	SHA256_Update(&sha256, str.c_str(), str.size());
-	SHA256_Final(hash, &sha256);
-	std::stringstream ss;
-	for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
-		ss << std::hex << std::setw(2) << std::setfill('0') << (int) hash[i];
-	}
-	return ss.str();
-}
-
-std::string zdp::crypto::sha256(void* data, unsigned int length) {
-	unsigned char hash[SHA256_DIGEST_LENGTH];
-	SHA256_CTX sha256;
-	SHA256_Init(&sha256);
-	SHA256_Update(&sha256, data, length);
-	SHA256_Final(hash, &sha256);
-	std::stringstream ss;
-	for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
-		ss << std::hex << std::setw(2) << std::setfill('0') << (int) hash[i];
-	}
-	return ss.str();
-}
-
 EC_KEY *zdp::crypto::ec_new_keypair(const uint8_t *priv_bytes) {
 
 	EC_KEY *key = nullptr;
@@ -48,7 +22,12 @@ EC_KEY *zdp::crypto::ec_new_keypair(const uint8_t *priv_bytes) {
 
 	/* init empty OpenSSL EC keypair */
 
-	key = EC_KEY_new_by_curve_name(NID_secp256k1);
+	key = EC_KEY_new_by_curve_name(NID_brainpoolP256r1);
+
+	if (!key) {
+		std::cerr << "Can't generate curve NID_brainpoolP256r1\n";
+		std::abort();
+	}
 
 	/* set private key through BIGNUM */
 
@@ -81,29 +60,13 @@ EC_KEY *zdp::crypto::ec_new_pubkey(const uint8_t *pub_bytes, size_t pub_len) {
 	EC_KEY *key = nullptr;
 	const uint8_t *pub_bytes_copy = nullptr;
 
-	key = EC_KEY_new_by_curve_name(NID_secp256k1);
+	key = EC_KEY_new_by_curve_name(NID_brainpoolP256r1);
 	pub_bytes_copy = pub_bytes;
 	o2i_ECPublicKey(&key, &pub_bytes_copy, pub_len);
 
 	return key;
 }
 
-std::string zdp::crypto::encrypt(std::string const & public_key, std::string const & text) {
+int zdp::crypto::sign(EC_KEY* key, std::string const & text) {
 
 }
-
-/*
- void zdp::crypto::randomise(const void* arr, unsigned int length) {
-
- byte buffer[length];
-
- int rc = RAND_bytes(buffer, sizeof(buffer));
- unsigned long err = ERR_get_error();
-
- if (rc != 1) {
- std::cerr << "Can't generate random number\n";
- } else {
- std::cout << "Generated random number\n";
- }
- }
- */

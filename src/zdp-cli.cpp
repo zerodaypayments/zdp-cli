@@ -1,11 +1,14 @@
 #include <iostream>
+
+#include <openssl/conf.h>
+#include <openssl/evp.h>
+#include <openssl/err.h>
+
 #include "args.hpp"
 #include "utils/http_utils.h"
 #include "utils/crypto_utils.h"
 #include "utils/key_pair.h"
 #include "json.hpp"
-
-#include "utils/cryptron/ecies.h"
 
 args::Group arguments("arguments");
 args::HelpFlag h(arguments, "help", "help", { 'h', "help" });
@@ -20,13 +23,19 @@ const auto user_agent = "zdp-cli";
 
 int main(int argc, const char **argv) {
 
-	OpenSSL_add_all_algorithms();
-	ERR_load_BIO_strings();
+/*
+	// Load the human readable error strings for libcrypto
 	ERR_load_crypto_strings();
+
+	// Load all digest and cipher algorithms
+	OpenSSL_add_all_algorithms();
+
+	// Load config file, and other important initialisation
+	OPENSSL_config(NULL);
+	*/
 
 	std::string key = "03F15CA200C6683D0469F39A58ECD93B39ECA2E4D4204095D99C32DF292F7867B4";
 	std::string text = "hello world!";
-	ecies_group_init();
 
 	// unsigned char* t = reinterpret_cast<unsigned char *>( text.c_str()  );
 
@@ -167,6 +176,15 @@ int main(int argc, const char **argv) {
 		std::cerr << e.what() << std::endl << p;
 		return EXIT_FAILURE;
 	}
+
+	// Removes all digests and ciphers
+	EVP_cleanup();
+
+	// if you omit the next, a small leak may be left when you make use of the BIO (low level API) for e.g. base64 transformations
+	CRYPTO_cleanup_all_ex_data();
+
+	// Remove error strings
+	ERR_free_strings();
 
 	return EXIT_SUCCESS;
 }

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 
 #include <openssl/rand.h>
 #include <openssl/err.h>
@@ -11,6 +12,7 @@
 
 #include "crypto_utils.h"
 #include "key_pair.h"
+#include "base58.h"
 
 namespace zdp {
 
@@ -29,10 +31,37 @@ namespace zdp {
 
 		auto key = zdp::crypto::ec_new_keypair(buffer);
 
-		auto priv_bn = EC_KEY_get0_private_key(key);
+		// Private key in Base58
+		{
 
-		this->private_key = BN_bn2hex(priv_bn);
-		this->public_key = EC_POINT_point2hex(EC_KEY_get0_group(key), EC_KEY_get0_public_key(key), point_conversion_form_t::POINT_CONVERSION_COMPRESSED, nullptr);
+			auto priv_bn = EC_KEY_get0_private_key(key);
+
+			std::vector<unsigned char> priv_byte_array(BN_num_bytes(priv_bn));
+
+			BN_bn2bin(priv_bn, priv_byte_array.data());
+
+			auto priv_base58 = zdp::base58::encode_base(priv_byte_array);
+
+			this->private_key = priv_base58;
+
+		}
+
+		// Public key in Base58
+		{
+
+			auto pub_bn = BN_new();
+
+			EC_POINT_point2bn(EC_KEY_get0_group(key), EC_KEY_get0_public_key(key), point_conversion_form_t::POINT_CONVERSION_COMPRESSED, pub_bn, nullptr);
+
+			std::vector<unsigned char> pub_byte_array(BN_num_bytes(pub_bn));
+
+			BN_bn2bin(pub_bn, pub_byte_array.data());
+
+			auto pub_base58 = zdp::base58::encode_base(pub_byte_array);
+
+			this->public_key = std::string(pub_base58);
+
+		}
 
 		EC_KEY_free(key);
 	}
