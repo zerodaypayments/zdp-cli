@@ -15,15 +15,14 @@ args::HelpFlag h(arguments, "help", "help", { 'h', "help" });
 
 using nlohmann::json;
 
-std::string host = "http://localhost";
-//	std::string host = "http://api.zdp.io";
+//std::string host = "http://localhost";
+std::string host = "http://api.zdp.io";
 
 const auto timeout = 10;
 const auto user_agent = "zdp-cli";
 
 int main(int argc, const char **argv) {
 
-/*
 	// Load the human readable error strings for libcrypto
 	ERR_load_crypto_strings();
 
@@ -32,16 +31,8 @@ int main(int argc, const char **argv) {
 
 	// Load config file, and other important initialisation
 	OPENSSL_config(NULL);
-	*/
 
-	std::string key = "03F15CA200C6683D0469F39A58ECD93B39ECA2E4D4204095D99C32DF292F7867B4";
-	std::string text = "hello world!";
-
-	// unsigned char* t = reinterpret_cast<unsigned char *>( text.c_str()  );
-
-	//auto enc = ecies_encrypt(const_cast<char*> (key.c_str() ), t , text.size());
-
-	args::ArgumentParser p("ZDP command line interface");
+	args::ArgumentParser p("ZDP command line interface (cli)");
 	args::Group commands(p, "commands");
 
 	args::Command fee(commands, "fee", "Get the current network fee", [&](args::Subparser &parser)
@@ -88,8 +79,14 @@ int main(int argc, const char **argv) {
 		 auto language = args::get(lang);
 		 */
 
-		zdp::key_pair kp;
-		std::cout << kp.to_json(zdp::language::english) << std::endl;
+		zdp::utils::httpclient http_client;
+
+		auto resp = http_client.get(host + "/api/v1/account/new", timeout, user_agent);
+		if (!resp.error) {
+			auto json = json::parse(resp.data);
+			std::cout << json.dump(4) << std::endl;
+		}
+
 
 	});
 
@@ -100,10 +97,14 @@ int main(int argc, const char **argv) {
 
 		parser.Parse();
 
-		auto key = args::get(keyValue);
+		zdp::utils::httpclient http_client;
 
-		zdp::key_pair kp (key);
-		std::cout << kp.to_json(zdp::language::english) << std::endl;
+		// TODO
+		auto resp = http_client.get(host + "/api/v1/account/publicKey/", timeout, user_agent);
+		if (!resp.error) {
+			auto json = json::parse(resp.data);
+			std::cout << json.dump(4) << std::endl;
+		}
 
 	});
 
