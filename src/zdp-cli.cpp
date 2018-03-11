@@ -5,9 +5,9 @@
 #include <openssl/err.h>
 
 #include "args.hpp"
-#include "utils/http_utils.h"
 #include "utils/crypto_utils.h"
 #include "utils/key_pair.h"
+#include "utils/http_utils.h"
 #include "json.hpp"
 
 args::Group arguments("arguments");
@@ -15,22 +15,28 @@ args::HelpFlag h(arguments, "help", "help", { 'h', "help" });
 
 using nlohmann::json;
 
-//std::string host = "http://localhost";
-std::string host = "http://api.zdp.io";
+std::string host = "http://localhost";
+//std::string host = "http://api.zdp.io";
 
 const auto timeout = 10;
 const auto user_agent = "zdp-cli";
 
 int main(int argc, const char **argv) {
 
-	// Load the human readable error strings for libcrypto
-	ERR_load_crypto_strings();
+	auto t = std::time(nullptr);
+	auto tm = *std::localtime(&t);
+	std::cout << std::put_time(&tm, "%d-%m-%Y %H-%M-%S") << std::endl;
 
-	// Load all digest and cipher algorithms
-	OpenSSL_add_all_algorithms();
+	/*
+	 // Load the human readable error strings for libcrypto
+	 ERR_load_crypto_strings();
 
-	// Load config file, and other important initialisation
-	OPENSSL_config(NULL);
+	 // Load all digest and cipher algorithms
+	 OpenSSL_add_all_algorithms();
+
+	 // Load config file, and other important initialisation
+	 OPENSSL_config(NULL);
+	 */
 
 	args::ArgumentParser p("ZDP command line interface (cli)");
 	args::Group commands(p, "commands");
@@ -79,32 +85,33 @@ int main(int argc, const char **argv) {
 		 auto language = args::get(lang);
 		 */
 
-		zdp::utils::httpclient http_client;
+		/*
+		 zdp::utils::httpclient http_client;
 
-		auto resp = http_client.get(host + "/api/v1/account/new", timeout, user_agent);
-		if (!resp.error) {
-			auto json = json::parse(resp.data);
-			std::cout << json.dump(4) << std::endl;
-		}
+		 auto resp = http_client.get(host + "/api/v1/account/new", timeout, user_agent);
+		 if (!resp.error) {
+		 auto json = json::parse(resp.data);
+		 std::cout << json.dump(4) << std::endl;
+		 }
+		 */
 
+		zdp::key_pair kp;
+		std::cout << kp.to_json(zdp::language::english) << std::endl;
 
 	});
 
 	args::Command keys(commands, "publickey", "Generate public key", [&](args::Subparser &parser)
 	{
 
-		args::ValueFlag<std::string> keyValue(parser, "PRIVATEKEY", "Private key", {"key"}, args::Options::Required);
+		args::ValueFlag<std::string> key(parser, "PRIVATEKEY", "Private key", {"key"}, args::Options::Required);
 
 		parser.Parse();
 
-		zdp::utils::httpclient http_client;
+		auto priv= args::get(key);
 
-		// TODO
-		auto resp = http_client.get(host + "/api/v1/account/publicKey/", timeout, user_agent);
-		if (!resp.error) {
-			auto json = json::parse(resp.data);
-			std::cout << json.dump(4) << std::endl;
-		}
+		zdp::key_pair kp (priv);
+
+		std::cout << kp.to_json(zdp::language::english) << std::endl;
 
 	});
 

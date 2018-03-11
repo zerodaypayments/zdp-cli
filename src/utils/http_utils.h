@@ -43,7 +43,9 @@ namespace zdp {
 
 				~httpclient();
 
-				httpresponse get(std::string url, int timeoutInSeconds, std::string agent);
+				httpresponse get(std::string& url, int timeoutInSeconds, std::string& agent);
+
+				httpresponse post(std::string& url, int timeoutInSeconds, std::string& agent, std::string& json);
 
 			private:
 

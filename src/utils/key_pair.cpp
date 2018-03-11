@@ -68,21 +68,8 @@ namespace zdp {
 
 	key_pair::key_pair(std::string priv_key) {
 
-		BIGNUM* bn = nullptr;
-
-		BN_hex2bn(&bn, priv_key.c_str());
-
-		uint8_t buffer[BN_num_bytes(bn)];
-		BN_bn2bin(bn, buffer);
-
-		auto key = zdp::crypto::ec_new_keypair(buffer);
-
-		auto priv_bn = EC_KEY_get0_private_key(key);
-		this->private_key = BN_bn2hex(priv_bn);
-
-		this->public_key = EC_POINT_point2hex(EC_KEY_get0_group(key), EC_KEY_get0_public_key(key), point_conversion_form_t::POINT_CONVERSION_COMPRESSED, nullptr);
-
-		EC_KEY_free(key);
+		this->private_key = priv_key;
+		this->public_key = zdp::crypto::get_public_key(priv_key);
 
 	}
 

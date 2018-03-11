@@ -39,7 +39,12 @@ namespace zdp {
 			}
 		}
 
-		httpresponse httpclient::get(std::string url, int timeoutInSeconds, std::string agent) {
+
+		httpresponse httpclient::post(std::string& url, int timeoutInSeconds, std::string& agent, std::string& json) {
+
+		}
+
+		httpresponse httpclient::get(std::string& url, int timeoutInSeconds, std::string& agent) {
 
 //			std::cout << "HTTP Get [" << url << "] with [" << agent << "]" << std::endl;
 
