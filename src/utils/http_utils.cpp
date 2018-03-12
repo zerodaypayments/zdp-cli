@@ -39,18 +39,71 @@ namespace zdp {
 			}
 		}
 
+		httpresponse httpclient::postJson(std::string url, int timeoutInSeconds, std::string agent, std::string json) {
 
-		httpresponse httpclient::post(std::string& url, int timeoutInSeconds, std::string& agent, std::string& json) {
+			std::cout << "HTTP JSON post [" << url << "] with [" << agent << "] of " << json << std::endl;
+
+			std::ostringstream stream;
+
+			//			curl_easy_setopt(curl, CURLOPT_PROXY, "http://e:8080");
+
+			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &data_write);
+			curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
+			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+			curl_easy_setopt(curl, CURLOPT_FILE, &stream);
+			curl_easy_setopt(curl, CURLOPT_TIMEOUT, timeoutInSeconds);
+			curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+			curl_easy_setopt(curl, CURLOPT_USERAGENT, agent.c_str());
+			curl_easy_setopt(curl, CURLOPT_POSTFIELDS, json.c_str());
+
+			struct curl_slist *headers = nullptr;
+			headers = curl_slist_append(headers, "Accept: application/json");
+			headers = curl_slist_append(headers, "Content-Type: application/json");
+			headers = curl_slist_append(headers, "charsets: utf-8");
+			curl_easy_setopt(curl, CURLOPT_HTTPHEADER,headers);
+
+			httpresponse response;
+
+			CURLcode res = curl_easy_perform(curl);
+
+			if (res != CURLE_OK) {
+
+				std::cerr << "Cannot connect to the network" << std::endl;
+				response.error = true;
+
+			} else {
+
+				if (CURLE_OK == res) {
+
+					char *ct;
+					/* ask for the content-type */
+					res = curl_easy_getinfo(curl, CURLINFO_CONTENT_TYPE, &ct);
+
+					if ((CURLE_OK == res) && ct) {
+						response.contentType = std::string(ct);
+					}
+
+					response.data = stream.str();
+					response.length = response.data.size();
+
+					//					std::cout << "Got response type: " << response.contentType << std::endl;
+					//					std::cout << "Got response length: " << std::to_string(response.length) << std::endl;
+					//					std::cout << "Got response: " << response.data << std::endl;
+
+				}
+			}
+
+			return response;
 
 		}
 
-		httpresponse httpclient::get(std::string& url, int timeoutInSeconds, std::string& agent) {
+		httpresponse httpclient::get(std::string url, int timeoutInSeconds, std::string agent) {
 
 //			std::cout << "HTTP Get [" << url << "] with [" << agent << "]" << std::endl;
 
 			std::ostringstream stream;
 
-//			curl_easy_setopt(curl, CURLOPT_PROXY, "http://eisproxyau:8080");
+//			curl_easy_setopt(curl, CURLOPT_PROXY, "http://e:8080");
 
 			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &data_write);
 			curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);

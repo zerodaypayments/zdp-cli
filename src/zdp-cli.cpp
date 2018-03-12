@@ -27,6 +27,13 @@ int main(int argc, const char **argv) {
 	auto tm = *std::localtime(&t);
 	std::cout << std::put_time(&tm, "%d-%m-%Y %H-%M-%S") << std::endl;
 
+	zdp::utils::httpclient http;
+
+	auto resp = http.postJson("https://httpbin.org/post", 10, "test ua", "{'id':2}");
+
+	std::cout << resp.data << std::endl;
+
+
 	/*
 	 // Load the human readable error strings for libcrypto
 	 ERR_load_crypto_strings();
