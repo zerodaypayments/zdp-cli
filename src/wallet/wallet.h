@@ -13,9 +13,13 @@
 #include <string>
 #include <vector>
 
-#include "../wallet/wallet_transaction.h"
+#include "../utils/mnemonics.h"
+#include "wallet_transaction.h"
 
 namespace zdp {
+
+	enum class wallet_language {
+	};
 
 	class wallet final {
 
@@ -55,6 +59,8 @@ namespace zdp {
 
 			const std::string& get_public_key() const;
 			void set_public_key(const std::string& publicKey);
+
+			std::string to_json();
 
 	};
 

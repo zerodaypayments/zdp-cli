@@ -58,5 +58,13 @@ namespace zdp {
 		public_key = publicKey;
 	}
 
+	wallet_transaction& wallet::get_by_uuid(std::string& uuid) {
+	}
+
+	std::vector<wallet_transaction> wallet::get_transactions() {
+	}
+
+	std::string wallet::to_json() {
+	}
 
 } /* namespace zdp */
