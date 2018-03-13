@@ -1,3 +1,6 @@
+/**
+ * createwallet --file
+ */
 #include <iostream>
 
 #include <openssl/conf.h>

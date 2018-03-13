@@ -15,9 +15,10 @@
 #include "file_utils.h"
 
 namespace zdp {
+
 	namespace files {
 
-		std::vector<std::string> read_lines(std::string file_name) {
+		std::vector<std::string> read_lines(const std::string& file_name) {
 
 			std::vector<std::string> lines;
 
@@ -33,7 +34,7 @@ namespace zdp {
 
 		}
 
-		std::string to_string(const std::string file) {
+		std::string to_string(const std::string& file) {
 
 			std::cout << "Read string from file [" << file << "]" << std::endl;
 
@@ -46,5 +47,15 @@ namespace zdp {
 		}
 
 	}
+
+	void write_string_to_file(std::string const & file_name, std::string const & content) {
+
+		std::cout << "Write string to file [" << file_name << "]" << std::endl;
+
+		std::ofstream file(file_name);
+		file << content;
+
+	}
+
 }
 

@@ -16,9 +16,11 @@
 namespace zdp {
 	namespace files {
 
-		std::vector<std::string> read_lines(std::string file_name);
+		std::vector<std::string> read_lines(const std::string& file_name);
 
-		std::string to_string(const std::string file);
+		std::string to_string(const std::string& file);
+
+		void write_string_to_file(const std::string& file, const std::string& content);
 
 	}
 }
