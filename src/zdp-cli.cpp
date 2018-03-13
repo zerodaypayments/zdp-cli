@@ -1,5 +1,15 @@
 /**
  * createwallet --file
+ * 		- create a wallet with private/public key pair and metadata
+ * walletinfo --file
+ * 		- display wallet metadata and transactions
+ * 	restorewallet --key or --words
+ *		- create a wallet from a private key or a list of words (mnemonics)
+ *	sync --file
+ *		- synchronize a wallet (balance/transactions)
+ *	getaddress --file
+ *		- get uniqie address for a wallet
+ *
  */
 #include <iostream>
 
