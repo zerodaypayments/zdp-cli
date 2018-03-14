@@ -2,18 +2,10 @@
  * http_utils.h
  *
  *  Created on: 19Feb.,2018
- *      Author: sxn144
  */
 
 #ifndef UTILS_HTTP_UTILS_H_
 #define UTILS_HTTP_UTILS_H_
-
-/*
- * http_utils.cpp
- *
- *  Created on: 19Feb.,2018
- *      Author: sxn144
- */
 
 #include <curl/curl.h>
 

@@ -39,11 +39,13 @@ namespace zdp {
 
 		zdp::key_pair kp;
 
-		zdp::files::write_string_to_file(file_name, kp.to_json(language));
+//		zdp::files::write_string_to_file(file_name, kp.to_json(language));
 
 	}
 
 	wallet wallet_service::restore_wallet(std::string& file_name, std::vector<std::string> mnemonics) {
+		wallet w;
+		return w;
 	}
 
 } /* namespace zdp */

@@ -10,6 +10,11 @@
 namespace zdp {
 	namespace crypto {
 
+		std::vector<unsigned char> random(const unsigned int length);
+
+		std::string sha256(const std::string& value);
+		std::string sha256(std::vector<unsigned char>& value);
+
 		EC_KEY *ec_new_keypair(const uint8_t *priv_bytes);
 		EC_KEY *ec_new_pubkey(const uint8_t *pub_bytes, size_t pub_len);
 

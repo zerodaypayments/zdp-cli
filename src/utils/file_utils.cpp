@@ -48,7 +48,7 @@ namespace zdp {
 
 	}
 
-	void write_string_to_file(std::string const & file_name, std::string const & content) {
+	void write_string_to_file(const std::string& file_name, const std::string& content) {
 
 		std::cout << "Write string to file [" << file_name << "]" << std::endl;
 

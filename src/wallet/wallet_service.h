@@ -16,10 +16,8 @@
 #include <vector>
 
 #include "../utils/mnemonics.h"
+#include "wallet.h"
 
-namespace zdp {
-	class wallet;
-} /* namespace zdp */
 
 namespace zdp {
 

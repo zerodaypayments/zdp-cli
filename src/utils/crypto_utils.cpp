@@ -27,7 +27,7 @@ EC_KEY *zdp::crypto::ec_new_keypair(const uint8_t *priv_bytes) {
 	key = EC_KEY_new_by_curve_name(NID_secp256k1);
 
 	if (!key) {
-		std::cerr << "Can't generate curve NID_secp256k1\n";
+		std::cerr << "Can't generate curve secp256k1\n";
 		std::abort();
 	}
 
@@ -93,8 +93,46 @@ std::string zdp::crypto::get_public_key(std::string& priv_key) {
 
 }
 
+std::string zdp::crypto::sha256(std::string const & str) {
+
+	unsigned char hash[SHA256_DIGEST_LENGTH];
+	SHA256_CTX sha256;
+	SHA256_Init(&sha256);
+	SHA256_Update(&sha256, str.c_str(), str.size());
+	SHA256_Final(hash, &sha256);
+	std::stringstream ss;
+	for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
+		ss << std::hex << std::setw(2) << std::setfill('0') << (int) hash[i];
+	}
+	return ss.str();
+
+}
+
+std::string zdp::crypto::sha256(std::vector<unsigned char>& unhashed) {
+
+	unsigned char hash[SHA256_DIGEST_LENGTH];
+	SHA256_CTX sha256;
+	SHA256_Init(&sha256);
+	SHA256_Update(&sha256, unhashed.data(), unhashed.size());
+	SHA256_Final(hash, &sha256);
+	std::stringstream ss;
+	for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
+		ss << std::hex << std::setw(2) << std::setfill('0') << (int) hash[i];
+	}
+	return ss.str();
+
+}
+
 std::vector<unsigned char> zdp::crypto::sign(std::string& private_key, std::string const & text) {
+	
+}
 
+std::vector<unsigned char> zdp::crypto::random(const unsigned int length) {
 
+	std::vector<unsigned char> buffer(length);
+
+	RAND_bytes(buffer.data(), length);
+
+	return buffer;
 
 }

@@ -36,15 +36,12 @@ const auto user_agent = "zdp-cli";
 
 int main(int argc, const char **argv) {
 
+	auto buffer = zdp::crypto::random(256);
+	std::cout << "sha: " << zdp::crypto::sha256(buffer);
+
 	auto t = std::time(nullptr);
 	auto tm = *std::localtime(&t);
 	std::cout << std::put_time(&tm, "%d-%m-%Y %H-%M-%S") << std::endl;
-
-	zdp::utils::httpclient http;
-
-	auto resp = http.postJson("https://httpbin.org/post", 10, "test ua", "{'id':2}");
-
-	std::cout << resp.data << std::endl;
 
 
 	/*

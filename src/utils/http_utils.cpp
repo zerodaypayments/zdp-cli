@@ -2,7 +2,6 @@
  * http_utils.cpp
  *
  *  Created on: 19Feb.,2018
- *      Author: sxn144
  */
 
 #include <curl/curl.h>
