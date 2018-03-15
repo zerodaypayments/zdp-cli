@@ -27,7 +27,7 @@ namespace zdp {
 		if (rc != 1) {
 			std::cerr << "Can't generate a number: " << std::to_string(ERR_get_error()) << std::endl;
 			std::abort();
-		}
+		}/*
 
 		auto key = zdp::crypto::ec_new_keypair(buffer);
 
@@ -64,6 +64,7 @@ namespace zdp {
 		}
 
 		EC_KEY_free(key);
+	*/
 	}
 
 	key_pair::key_pair(std::string priv_key) {

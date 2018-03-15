@@ -1,19 +1,14 @@
 #include "crypto_utils.h"
 
-#include <iostream>
-#include <sstream>
-#include <iomanip>
-
-#include <openssl/bn.h>
-#include <openssl/ec.h>
-#include <openssl/obj_mac.h>
 #include <openssl/rand.h>
-#include <openssl/err.h>
 #include <openssl/sha.h>
-#include <openssl/evp.h>
+#include <iomanip>
+#include <sstream>
 
 #include "base58.h"
+#include "openssl/ec_key.h"
 
+/*
 EC_KEY *zdp::crypto::ec_new_keypair(const uint8_t *priv_bytes) {
 
 	EC_KEY *key = nullptr;
@@ -22,8 +17,6 @@ EC_KEY *zdp::crypto::ec_new_keypair(const uint8_t *priv_bytes) {
 	const EC_GROUP *group = nullptr;
 	EC_POINT *pub = nullptr;
 
-	/* init empty OpenSSL EC keypair */
-
 	key = EC_KEY_new_by_curve_name(NID_secp256k1);
 
 	if (!key) {
@@ -31,13 +24,9 @@ EC_KEY *zdp::crypto::ec_new_keypair(const uint8_t *priv_bytes) {
 		std::abort();
 	}
 
-	/* set private key through BIGNUM */
-
 	priv = BN_new();
 	BN_bin2bn(priv_bytes, 32, priv);
 	EC_KEY_set_private_key(key, priv);
-
-	/* derive public key from private key and group */
 
 	ctx = BN_CTX_new();
 	BN_CTX_start(ctx);
@@ -46,8 +35,6 @@ EC_KEY *zdp::crypto::ec_new_keypair(const uint8_t *priv_bytes) {
 	pub = EC_POINT_new(group);
 	EC_POINT_mul(group, pub, priv, NULL, NULL, ctx);
 	EC_KEY_set_public_key(key, pub);
-
-	/* release resources */
 
 	EC_POINT_free(pub);
 	BN_CTX_end(ctx);
@@ -68,13 +55,19 @@ EC_KEY *zdp::crypto::ec_new_pubkey(const uint8_t *pub_bytes, size_t pub_len) {
 
 	return key;
 }
-
+*/
 std::string zdp::crypto::get_public_key(std::string& priv_key) {
 
 	std::vector<unsigned char> byte_array;
 
 	zdp::base58::decode_base(priv_key, byte_array);
 
+
+	zdp::crypto::openssl::ec_key key;
+
+
+
+/*
 	auto key = zdp::crypto::ec_new_keypair(byte_array.data());
 
 	// Public key in Base58
@@ -90,7 +83,7 @@ std::string zdp::crypto::get_public_key(std::string& priv_key) {
 	auto pub_base58 = zdp::base58::encode_base(pub_byte_array);
 
 	return std::string(pub_base58);
-
+*/
 }
 
 std::string zdp::crypto::sha256(std::string const & str) {

@@ -1,7 +1,7 @@
 #ifndef UTILS_OPENSSL_EC_KEY_H_
 #define UTILS_OPENSSL_EC_KEY_H_
 
-#include <openssl/ossl_typ.h>
+#include <openssl/ec.h>
 #include <vector>
 
 #include "big_number.h"
