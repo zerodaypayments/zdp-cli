@@ -112,8 +112,10 @@ int main(int argc, const char **argv) {
 		 }
 		 */
 
-		zdp::key_pair kp;
-		std::cout << kp.to_json(zdp::language::english) << std::endl;
+		//zdp::key_pair kp;
+		//std::cout << kp.to_json(zdp::language::english) << std::endl;
+
+		zdp::crypto::generate_new_key_pair();
 
 	});
 

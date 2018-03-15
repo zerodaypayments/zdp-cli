@@ -123,6 +123,16 @@ std::string zdp::crypto::sha256(std::vector<unsigned char>& unhashed) {
 
 }
 
+std::pair<std::string, std::string> zdp::crypto::generate_new_key_pair() {
+
+	std::pair<std::string, std::string> pair;
+
+	zdp::crypto::openssl::ec_key();
+
+
+	return pair;
+}
+
 std::vector<unsigned char> zdp::crypto::sign(std::string& private_key, std::string const & text) {
 	
 }

@@ -2,15 +2,16 @@
 #define UTILS_CRYPTO_UTILS_H_
 
 #include <openssl/ossl_typ.h>
-#include <openssl/ec.h>
-
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace zdp {
 	namespace crypto {
 
 		std::vector<unsigned char> random(const unsigned int length);
+
+		std::pair<std::string, std::string> generate_new_key_pair();
 
 		std::string sha256(const std::string& value);
 		std::string sha256(std::vector<unsigned char>& value);
