@@ -11,17 +11,23 @@
  *		- get uniqie address for a wallet
  *
  */
-#include <iostream>
 
-#include <openssl/conf.h>
-#include <openssl/evp.h>
+#include <openssl/crypto.h>
 #include <openssl/err.h>
+#include <openssl/evp.h>
+#include <cstdlib>
+#include <ctime>
+#include <cwchar>
+#include <iomanip>
+#include <iostream>
+#include <string>
 
 #include "args.hpp"
-#include "utils/crypto_utils.h"
-#include "utils/key_pair.h"
-#include "utils/http_utils.h"
 #include "json.hpp"
+#include "utils/crypto_utils.h"
+#include "utils/http_utils.h"
+#include "utils/key_pair.h"
+#include "utils/mnemonics.h"
 
 args::Group arguments("arguments");
 args::HelpFlag h(arguments, "help", "help", { 'h', "help" });
@@ -36,8 +42,9 @@ const auto user_agent = "zdp-cli";
 
 int main(int argc, const char **argv) {
 
-	auto buffer = zdp::crypto::random(256);
-	std::cout << "sha: " << zdp::crypto::sha256(buffer);
+	auto random_bytes = zdp::crypto::random(32);
+
+	std::cout << "sha 2: " << zdp::crypto::sha256(random_bytes) << std::endl;
 
 	auto t = std::time(nullptr);
 	auto tm = *std::localtime(&t);
@@ -112,10 +119,10 @@ int main(int argc, const char **argv) {
 		 }
 		 */
 
-		//zdp::key_pair kp;
-		//std::cout << kp.to_json(zdp::language::english) << std::endl;
+		zdp::key_pair kp;
+		std::cout << kp.to_json(zdp::language::english) << std::endl;
 
-		zdp::crypto::generate_new_key_pair();
+		//zdp::crypto::generate_new_key_pair();
 
 	});
 

@@ -2,48 +2,25 @@
 #define UTILS_CRYPTO_UTILS_H_
 
 #include <openssl/ossl_typ.h>
+#include <openssl/ec.h>
+
 #include <string>
-#include <utility>
 #include <vector>
 
 namespace zdp {
-
 	namespace crypto {
 
-		/*
-		 * Generate random private key in Base58 format for NID_secp256k1 curve
-		 */
-		std::string generate_random_private_key();
-
-		/**
-		 * Generate public key in Base58 format for a given private key (in Base58 format)
-		 */
-		std::string generate_public_key(const std::string& private_key_58);
-
-		/**
-		 * Generate a byte vector of random bytes of specified length
-		 */
 		std::vector<unsigned char> random(const unsigned int length);
 
-		/**
-		 * Calculates the SHA-256 digest and returns the value as a string value
-		 */
 		std::string sha256(const std::string& value);
+		std::string sha256(std::vector<unsigned char>& value);
 
-		/**
-		 * Calculates the SHA-256 digest and returns the value as a string value
-		 */
-		std::string sha256(const std::vector<unsigned char>& value);
+		EC_KEY *ec_new_keypair(const uint8_t *priv_bytes);
+		EC_KEY *ec_new_pubkey(const uint8_t *pub_bytes, size_t pub_len);
 
-		/**
-		 * Sign some text and return as a byte vector
-		 */
-		std::vector<unsigned char> sign(const std::string& private_key, const std::string& text);
+		std::string get_public_key(std::string& private_key);
 
-		/**
-		 * Ecnrypt some text using a network public key and return as a string
-		 */
-		std::string encrypt_with_network_public_key(const std::string& text);
+		std::vector<unsigned char> sign(std::string& private_key, const std::string& text);
 
 	}
 }
