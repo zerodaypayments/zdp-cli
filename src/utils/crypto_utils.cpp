@@ -11,10 +11,11 @@
 #include <openssl/err.h>
 #include <openssl/sha.h>
 #include <openssl/evp.h>
+#include <openssl/ecdsa.h>
 
 #include "base58.h"
 
-EC_KEY *zdp::crypto::ec_new_keypair(const uint8_t *priv_bytes) {
+EC_KEY *zdp::crypto::ec_new_keypair(std::vector<unsigned char>& priv_bytes) {
 
 	EC_KEY *key = nullptr;
 	BIGNUM *priv = nullptr;
@@ -34,7 +35,7 @@ EC_KEY *zdp::crypto::ec_new_keypair(const uint8_t *priv_bytes) {
 	/* set private key through BIGNUM */
 
 	priv = BN_new();
-	BN_bin2bn(priv_bytes, 32, priv);
+	BN_bin2bn(priv_bytes.data(), 32, priv);
 	EC_KEY_set_private_key(key, priv);
 
 	/* derive public key from private key and group */
@@ -57,25 +58,23 @@ EC_KEY *zdp::crypto::ec_new_keypair(const uint8_t *priv_bytes) {
 	return key;
 }
 
-EC_KEY *zdp::crypto::ec_new_pubkey(const uint8_t *pub_bytes, size_t pub_len) {
+EC_KEY *zdp::crypto::ec_new_pubkey(std::vector<unsigned char>& pub_key) {
 
 	EC_KEY *key = nullptr;
 	const uint8_t *pub_bytes_copy = nullptr;
 
 	key = EC_KEY_new_by_curve_name(NID_secp256k1);
-	pub_bytes_copy = pub_bytes;
-	o2i_ECPublicKey(&key, &pub_bytes_copy, pub_len);
+	pub_bytes_copy = pub_key.data();
+	o2i_ECPublicKey(&key, &pub_bytes_copy, pub_key.size());
 
 	return key;
 }
 
 std::string zdp::crypto::get_public_key(std::string& priv_key) {
 
-	std::vector<unsigned char> byte_array;
+	auto byte_array = zdp::base58::decode_base(priv_key);
 
-	zdp::base58::decode_base(priv_key, byte_array);
-
-	auto key = zdp::crypto::ec_new_keypair(byte_array.data());
+	auto key = zdp::crypto::ec_new_keypair(byte_array);
 
 	// Public key in Base58
 
@@ -93,7 +92,7 @@ std::string zdp::crypto::get_public_key(std::string& priv_key) {
 
 }
 
-std::string zdp::crypto::sha256(std::string const & str) {
+std::string zdp::crypto::sha256(std::string& str) {
 
 	unsigned char hash[SHA256_DIGEST_LENGTH];
 	SHA256_CTX sha256;
@@ -123,10 +122,6 @@ std::string zdp::crypto::sha256(std::vector<unsigned char>& unhashed) {
 
 }
 
-std::vector<unsigned char> zdp::crypto::sign(std::string& private_key, std::string const & text) {
-
-}
-
 std::vector<unsigned char> zdp::crypto::random(const unsigned int length) {
 
 	std::vector<unsigned char> buffer(length);
@@ -135,4 +130,19 @@ std::vector<unsigned char> zdp::crypto::random(const unsigned int length) {
 
 	return buffer;
 
+}
+
+std::vector<unsigned char> zdp::crypto::sign(std::string& private_key_58, std::string& text) {
+
+	// Convert Base58 private key to EC_KEY
+	auto priv_key_bytes = zdp::base58::decode_base(private_key_58);
+
+	auto ec_key = zdp::crypto::ec_new_keypair(priv_key_bytes);
+
+    auto signature = ECDSA_do_sign((const unsigned char*)text.data(), text.size(), ec_key);
+
+    // https://stackoverflow.com/questions/30102116/how-to-convert-ecdsa-sig-signature-to-array-of-characters-in-c
+}
+
+std::vector<unsigned char> zdp::crypto::encrypt(std::string& public_key_58, std::string& text) {
 }

@@ -20,14 +20,7 @@ namespace zdp {
 
 	key_pair::key_pair() {
 
-		uint8_t buffer[32];
-
-		int rc = RAND_bytes(buffer, sizeof(buffer));
-
-		if (rc != 1) {
-			std::cerr << "Can't generate a number: " << std::to_string(ERR_get_error()) << std::endl;
-			std::abort();
-		}
+		auto buffer = zdp::crypto::random(SHA256_DIGEST_LENGTH);
 
 		auto key = zdp::crypto::ec_new_keypair(buffer);
 

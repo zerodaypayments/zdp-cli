@@ -43,7 +43,7 @@ namespace zdp {
 		 * Decode a base58-encoded string (str) into a byte vector (vchRet).
 		 * return true if decoding is successful.
 		 */
-		bool decode_base(const std::string& str, std::vector<unsigned char>& vchRet);
+		std::vector<unsigned char> decode_base(const std::string& str);
 
 	}
 }

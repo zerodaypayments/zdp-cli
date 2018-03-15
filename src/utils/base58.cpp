@@ -105,8 +105,13 @@ namespace zdp {
 			return encode_base(vch.data(), vch.data() + vch.size());
 		}
 
-		bool decode_base(const std::string& str, std::vector<unsigned char>& vchRet) {
-			return decode_base(str.c_str(), vchRet);
+		std::vector<unsigned char> decode_base(const std::string& str) {
+
+			std::vector<unsigned char> vchRet;
+
+			decode_base(str.c_str(), vchRet);
+
+			return vchRet;
 		}
 
 	}

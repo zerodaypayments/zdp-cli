@@ -12,15 +12,17 @@ namespace zdp {
 
 		std::vector<unsigned char> random(const unsigned int length);
 
-		std::string sha256(const std::string& value);
+		std::string sha256(std::string& value);
 		std::string sha256(std::vector<unsigned char>& value);
 
-		EC_KEY *ec_new_keypair(const uint8_t *priv_bytes);
-		EC_KEY *ec_new_pubkey(const uint8_t *pub_bytes, size_t pub_len);
+		EC_KEY *ec_new_keypair(std::vector<unsigned char>& byte_array);
+		EC_KEY *ec_new_pubkey(std::vector<unsigned char>& pub_key);
 
 		std::string get_public_key(std::string& private_key);
 
-		std::vector<unsigned char> sign(std::string& private_key, const std::string& text);
+		std::vector<unsigned char> sign(std::string& private_key_58, std::string& text);
+
+		std::vector<unsigned char> encrypt(std::string& public_key_58, std::string& text);
 
 	}
 }
